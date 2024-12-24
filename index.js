@@ -33,6 +33,12 @@ async function run() {
 
     const AddMarathonData = client.db("AddMarathonDB").collection("AllMarathonData") ; 
 
+    // Server Side Data Store 
+    app.get('/addMarathon' , async(req , res )=>{
+        const dataSore = AddMarathonData.find() ; 
+        const result = await dataSore.toArray() ; 
+        res.send(result)
+    })
 
     app.post('/addMarathon' , async(req , res)=>{
         const newMarathonData = req.body ; 
