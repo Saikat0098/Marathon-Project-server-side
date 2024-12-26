@@ -5,7 +5,7 @@ const express = require("express") ;
 const cors = require("cors");
 require("dotenv").config();
 const app = express() ; 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5500 ; 
 
 // mIDDLEWARE
@@ -32,6 +32,8 @@ async function run() {
     await client.connect();
 
     const AddMarathonData = client.db("AddMarathonDB").collection("AllMarathonData") ; 
+    const MarathonApplyData = client.db("AddMarathonDB").collection("MarathonApplyData") ; 
+
 
     // Server Side Data Store 
     app.get('/addMarathon' , async(req , res )=>{
@@ -47,6 +49,22 @@ async function run() {
     })
 
 
+    // apply Marathon 
+    app.post('/applyMarathon' , async(req , res ) => {
+      const newApply = req.body ; 
+      const result = await MarathonApplyData.insertOne(newApply)
+
+
+      // increase apply data 
+      const filter = {_id: new ObjectId(newApply.marathonApplyId)}
+      const update = {
+        $inc: {total_count: 1 }
+      }
+
+      await AddMarathonData.updateOne(filter , update )
+
+      res.send(result)
+    })
 
 
     // Send a ping to confirm a successful connection
