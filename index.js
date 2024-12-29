@@ -66,6 +66,33 @@ async function run() {
       res.send(result)
     })
 
+    // add marathon data update 
+    app.put('/UpdateMarathon/:id' , async(req , res ) =>{
+      const id = req.params.id ; 
+      const filter = {_id : new ObjectId(id)} ; 
+      const options = {upsert : true } ; 
+      const updateAddMarathonData = req.body ;
+
+ 
+      const update = {
+        $set:{
+          title : updateAddMarathonData.title , 
+       
+          startRegistrationDate : updateAddMarathonData.startRegistrationDate , 
+          endRegistrationDate : updateAddMarathonData.endRegistrationDate , 
+          marathonStartDate : updateAddMarathonData.marathonStartDate , 
+          location : updateAddMarathonData.location ,  
+          distance : updateAddMarathonData.distance , 
+          description : updateAddMarathonData.description , 
+          image : updateAddMarathonData.image , 
+
+        }
+       
+      }
+      const result = await AddMarathonData.updateOne(filter , update ) ; 
+      res.send(result)
+
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
