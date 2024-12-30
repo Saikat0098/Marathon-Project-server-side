@@ -37,10 +37,17 @@ async function run() {
 
     // Server Side Data Store 
     app.get('/addMarathon' , async(req , res )=>{
-        const dataSore = AddMarathonData.find() ; 
-        const result = await dataSore.toArray() ; 
+        const dataStore = AddMarathonData.find() ; 
+        const result = await dataStore.toArray() ; 
         res.send(result)
-    })
+    }) ; 
+
+    app.get('/addMarathon/:email' , async(req , res ) =>{
+      const email = req.params.email ; 
+      const filter = {post_email : email } ; 
+      const result = await AddMarathonData.find(filter).toArray() ; 
+      res.send(result)
+    } )
 
     app.post('/addMarathon' , async(req , res)=>{
         const newMarathonData = req.body ; 
