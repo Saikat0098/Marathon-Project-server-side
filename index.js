@@ -42,12 +42,23 @@ async function run() {
         res.send(result)
     }) ; 
 
+    // My List Data Specific email
+
     app.get('/addMarathon/:email' , async(req , res ) =>{
       const email = req.params.email ; 
       const filter = {post_email : email } ; 
       const result = await AddMarathonData.find(filter).toArray() ; 
       res.send(result)
     } )
+    //  My List Data Delete
+    
+   app.delete('/addMarathon/:id' , async(req , res )=>{
+    const SpecificId = req.params.id ; 
+    const filter = {_id : new ObjectId(SpecificId)}
+    const result = await AddMarathonData.deleteOne(filter) ; 
+    res.send(result)
+   })
+
 
     app.post('/addMarathon' , async(req , res)=>{
         const newMarathonData = req.body ; 
