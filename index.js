@@ -67,12 +67,37 @@ async function run() {
     })
 
 
+    // apply marathon server side save
+    app.get('/applyMarathon/:email' , async(req , res )=>{
+      const email = req.params.email ; 
+      const filter = {applyEmail : email } ; 
+      const result = await MarathonApplyData.find(filter).toArray() ; 
+      res.send(result)
+    })
+
+    // apply Marathon delete
+    app.delete('/applyMarathon/:id' , async(req , res ) =>{
+      const id = req.params.id ; 
+      const filter = {_id : new ObjectId(id)};
+      const result = await MarathonApplyData.deleteOne(filter) ; 
+      res.send(result)
+    })
+
+    // applyMarathon data store 
+    app.get('/applyMarathon' , async(req , res )=>{
+      const dataStore = MarathonApplyData.find() ; 
+      const result = await dataStore.toArray() ; 
+      res.send(result)
+  }) ; 
+
+
     // apply Marathon 
     app.post('/applyMarathon' , async(req , res ) => {
       const newApply = req.body ; 
       const result = await MarathonApplyData.insertOne(newApply)
+ 
 
-
+      // 
       // increase apply data 
       const filter = {_id: new ObjectId(newApply.marathonApplyId)}
       const update = {
@@ -83,6 +108,31 @@ async function run() {
 
       res.send(result)
     })
+
+    // apply marathon update
+    app.put('/UpdateApplyMarathon/:id' , async(req , res ) =>{
+      const id = req.params.id ; 
+      const filter = {_id : new ObjectId(id)} ; 
+      const options = {upsert : true } ; 
+      const UpdateApplyMarathon = req.body ;
+
+ 
+      const update = {
+        $set:{
+          title : UpdateApplyMarathon.title , 
+          firstName : UpdateApplyMarathon.firstName , 
+          lastName : UpdateApplyMarathon.lastName , 
+          contactNumber : UpdateApplyMarathon.contactNumber , 
+          
+
+        }
+       
+      }
+      const result = await MarathonApplyData.updateOne(filter , update ) ; 
+      res.send(result)
+
+    })
+
 
     // add marathon data update 
     app.put('/UpdateMarathon/:id' , async(req , res ) =>{
