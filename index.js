@@ -67,6 +67,12 @@ async function run() {
     })
 
 
+    // home page 6cards limit()
+    app.get('/homeMarathonSixCards' , async(req , res ) =>{
+      const marathonCard = await AddMarathonData.find().limit(6).toArray() ; 
+      res.send(marathonCard)
+    }  )
+
     // apply marathon server side save
     app.get('/applyMarathon/:email' , async(req , res )=>{
       const email = req.params.email ; 
