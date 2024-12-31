@@ -5,12 +5,19 @@ const express = require("express") ;
 const cors = require("cors");
 require("dotenv").config();
 const app = express() ; 
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = process.env.PORT || 5500 ; 
 
 // mIDDLEWARE
 
-app.use(cors()) ; 
+const corsOption = {
+  origin : ['http://localhost:5173'] , 
+  credentials : true ,
+   optionalSuccessStatus:200 
+}
+
+app.use(cors(corsOption)) ; 
 app.use(express.json());
 
 
@@ -34,13 +41,52 @@ async function run() {
     const AddMarathonData = client.db("AddMarathonDB").collection("AllMarathonData") ; 
     const MarathonApplyData = client.db("AddMarathonDB").collection("MarathonApplyData") ; 
 
+    // generate jwt 
+    app.post('/jwt', async(req, res) => {
+      const email = req.body;
+      const token = jwt.sign(email, process.env.SECRET_KEY, { expiresIn: "24h" });
+      
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+        // domain: process.env.NODE_ENV === 'production' ? '.your-domain.com' : 'localhost'
+      }).send({ success: true });
+    });
+
+     // logOut clear cookie
+     app.get('/logout' , async(req , res)=>{
+       res.clearCookie('token' , {
+        maxAge: 0,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+       }).send({ success: true })
+    })
+    // app.post('/jwt' , async(req , res) =>{
+    //   const email =req.body;
+    //   // create token
+    //   const token = jwt.sign(email , process.env.SECRET_KEY,{expiresIn:"24h"}) ;
+    //   console.log(token);
+
+    //   res.cookie('token' , token,{
+    //     httpOnly: true,
+    //     secure:process.env.NODE_ENV ==='production',
+    //     sameSite:process.env.NODE_ENV === '   production' ? 'none' : 'strict',
+    //   })
+
+
+    // })
+
 
     // Server Side Data Store 
+   
     app.get('/addMarathon' , async(req , res )=>{
         const dataStore = AddMarathonData.find() ; 
         const result = await dataStore.toArray() ; 
         res.send(result)
     }) ; 
+
+   
 
     // My List Data Specific email
 
