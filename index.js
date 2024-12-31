@@ -66,8 +66,18 @@ async function run() {
         res.send(result)
     })
 
+    // 
 
+  // home page cards store 
+      // Server Side Data Store 
+      app.get('/homeMarathonSixCards' , async(req , res )=>{
+        const dataStore = AddMarathonData.find() ; 
+        const result = await dataStore.toArray() ; 
+        res.send(result)
+    }) ; 
+    
     // home page 6cards limit()
+ 
     app.get('/homeMarathonSixCards' , async(req , res ) =>{
       const marathonCard = await AddMarathonData.find().limit(6).toArray() ; 
       res.send(marathonCard)
@@ -115,6 +125,7 @@ async function run() {
       res.send(result)
     })
 
+  
     // apply marathon update
     app.put('/UpdateApplyMarathon/:id' , async(req , res ) =>{
       const id = req.params.id ; 
