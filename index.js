@@ -84,12 +84,32 @@ async function run() {
     }  )
 
     // apply marathon server side save
-    app.get('/applyMarathon/:email' , async(req , res )=>{
-      const email = req.params.email ; 
-      const filter = {applyEmail : email } ; 
-      const result = await MarathonApplyData.find(filter).toArray() ; 
-      res.send(result)
-    })
+    app.get('/applyMarathon/:email', async (req, res) => {
+      const search = req.query.search;
+      const email = req.params.email; 
+      let filter = { applyEmail: email };
+      if (search) {
+        filter.marathonTitle = { $regex: search, $options: 'i' };
+      }
+    
+      const result = await MarathonApplyData.find(filter).toArray();
+      res.send(result);
+    });
+   
+    //   const search = req.query.search;
+    //   console.log(search);
+    //  let query = {
+    //   firstName:{
+    //     $regex:search , 
+    //     $options:'i'
+    //   }
+    //  }
+    //   // if(filterSearch) query.marathonTitle = filterSearch ;
+    //   const email = req.params.email ; 
+    //   const filter = {applyEmail : email } ; 
+    //   const result = await MarathonApplyData.find(filter ).toArray() ; 
+    //   res.send(result)
+    // })
 
     // apply Marathon delete
     app.delete('/applyMarathon/:id' , async(req , res ) =>{
