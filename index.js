@@ -17,6 +17,7 @@ app.use(
     origin: [
       "http://localhost:5173",
       "https://stupendous-semifreddo-aa16f7.netlify.app",
+      "https://verdant-bonbon-417997.netlify.app",
     ],
     credentials: true,
     optionalSuccessStatus: 200,
